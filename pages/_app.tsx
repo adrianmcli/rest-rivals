@@ -37,7 +37,7 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
     <SessionProvider session={session}>
       <QueryClientProvider client={queryClient}>
         <WagmiConfig client={wagmiClient}>
-          <RainbowKitProvider chains={chains}>
+          <RainbowKitProvider chains={chains} showRecentTransactions>
             <Component {...pageProps} />
           </RainbowKitProvider>
         </WagmiConfig>
