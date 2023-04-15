@@ -25,7 +25,7 @@ export default function Home() {
     <main className="min-h-screen px-12">
       <header className="py-4 flex items-center justify-between">
         <span className="text-4xl font-semibold">RestRivals</span>
-        <div className="flex gap-2">
+        <div className="flex gap-3">
           <LoginBtn />
           <ConnectButton />
         </div>
