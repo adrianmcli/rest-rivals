@@ -1,6 +1,5 @@
-import Image from "next/image";
-
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+import LoginBtn from "@/components/login-btn";
 
 export default function Home() {
   return (
@@ -19,6 +18,7 @@ export default function Home() {
           Sign-in with Oura
         </button>
       </div>
+      <LoginBtn />
     </main>
   );
 }
