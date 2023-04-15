@@ -80,7 +80,7 @@ export function SleepingPod({ pod }: Props) {
           onClick={() => startWrite?.()}
           className="shadow shadow-blue-700 disabled:opacity-70 h-8 bg-blue-500 px-4 rounded-lg w-full mt-2 disabled:hover:cursor-not-allowed enabled:hover:bg-blue-500/70 transition-colors ease-in-out"
         >
-          {isLoading ? "Pending" : "Start round"}
+          {isLoadingWrite ? "Pending" : "Start round"}
         </button>
       )}
     </div>
