@@ -5,7 +5,7 @@ import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { SessionProvider } from "next-auth/react";
 import { Inter } from "next/font/google";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { configureChains, createClient, WagmiConfig } from "wagmi";
+import { configureChains, createClient, goerli, WagmiConfig } from "wagmi";
 import { arbitrum, mainnet, optimism, polygon } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 
@@ -17,10 +17,7 @@ const inter = Inter({
   variable: "--inter-font",
 });
 
-const { chains, provider } = configureChains(
-  [mainnet, polygon, optimism, arbitrum],
-  [publicProvider()]
-);
+const { chains, provider } = configureChains([mainnet, goerli], [publicProvider()]);
 const { connectors } = getDefaultWallets({
   appName: "My RainbowKit App",
   projectId: "YOUR_PROJECT_ID",

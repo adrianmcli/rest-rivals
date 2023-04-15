@@ -12,7 +12,7 @@ const PODS = [
     end: 1682294400,
     minScore: 50,
     maxSleepers: 7,
-    stake: 5,
+    stake: 0.01,
   },
 ];
 

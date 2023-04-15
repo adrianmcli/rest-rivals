@@ -1,4 +1,5 @@
-import { useContractWrite, usePrepareContractWrite } from "wagmi";
+import { useAccount, useContractWrite, usePrepareContractWrite } from "wagmi";
+import { ethers } from "ethers";
 
 interface Pod {
   name: string;
@@ -14,11 +15,15 @@ interface Props {
 }
 
 export function SleepingPod({ pod }: Props) {
+  const { address } = useAccount();
   const { config, error } = usePrepareContractWrite({
-    address: "0xecb504d39723b0be0e3a9aa33d646642d1051ee1",
-    abi: wagmigotchiABI,
-    functionName: "feed",
-    // args: []
+    address: "0xa74BcF8Ea3A1F83EEf0256070fDe58eDe10189F1",
+    abi: gameABI,
+    functionName: "joinGame",
+    overrides: {
+      from: address,
+      value: ethers.utils.parseEther("0.01"),
+    },
   });
   const { write } = useContractWrite(config);
 
@@ -44,13 +49,13 @@ export function SleepingPod({ pod }: Props) {
         </div>
         <div className="flex justify-between items-center gap-4">
           <label>Stake amount</label>
-          <span>USD {pod.stake}</span>
+          <span>ETH {pod.stake}</span>
         </div>
       </div>
       <button
         disabled={!write}
         onClick={() => write?.()}
-        className="disabled:opacity-70 h-8 bg-blue-500 px-4 rounded-lg w-full mt-2 disabled:hover:cursor-not-allowed enabled:hover:bg-blue-500/70 transition-colors ease-in-out"
+        className="shadow shadow-blue-700 disabled:opacity-70 h-8 bg-blue-500 px-4 rounded-lg w-full mt-2 disabled:hover:cursor-not-allowed enabled:hover:bg-blue-500/70 transition-colors ease-in-out"
       >
         Stake
       </button>
@@ -58,68 +63,217 @@ export function SleepingPod({ pod }: Props) {
   );
 }
 
-const wagmigotchiABI = [
-  { inputs: [], stateMutability: "nonpayable", type: "constructor" },
+const gameABI = [
   {
-    anonymous: false,
     inputs: [
-      { indexed: true, internalType: "address", name: "caretaker", type: "address" },
-      { indexed: true, internalType: "uint256", name: "amount", type: "uint256" },
+      {
+        internalType: "address",
+        name: "_coordinator",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "_stakeAmount",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "_roundDuration",
+        type: "uint256",
+      },
     ],
-    name: "CaretakerLoved",
-    type: "event",
-  },
-  { inputs: [], name: "clean", outputs: [], stateMutability: "nonpayable", type: "function" },
-  { inputs: [], name: "feed", outputs: [], stateMutability: "nonpayable", type: "function" },
-  {
-    inputs: [],
-    name: "getAlive",
-    outputs: [{ internalType: "bool", name: "", type: "bool" }],
-    stateMutability: "view",
-    type: "function",
+    stateMutability: "nonpayable",
+    type: "constructor",
   },
   {
     inputs: [],
-    name: "getBoredom",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    name: "coordinator",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [],
-    name: "getHunger",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    name: "determineLoserAndRewards",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "minScoreIndex",
+        type: "uint256",
+      },
+    ],
+    name: "distributeRewards",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "gameActive",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [],
-    name: "getSleepiness",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    name: "joinGame",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "numParticipants",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    name: "participantIndex",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    name: "participants",
+    outputs: [
+      {
+        internalType: "address",
+        name: "participantAddress",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "sleepScore",
+        type: "uint256",
+      },
+      {
+        internalType: "bool",
+        name: "submittedScore",
+        type: "bool",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [],
-    name: "getStatus",
-    outputs: [{ internalType: "string", name: "", type: "string" }],
+    name: "roundDuration",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [],
-    name: "getUncleanliness",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    name: "roundStartTime",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
   {
-    inputs: [{ internalType: "address", name: "", type: "address" }],
-    name: "love",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    inputs: [],
+    name: "stakeAmount",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
-  { inputs: [], name: "play", outputs: [], stateMutability: "nonpayable", type: "function" },
-  { inputs: [], name: "sleep", outputs: [], stateMutability: "nonpayable", type: "function" },
+  {
+    inputs: [],
+    name: "startNewRound",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "startRound",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "participant",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "_sleepScore",
+        type: "uint256",
+      },
+    ],
+    name: "submitSleepScore",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
 ];
