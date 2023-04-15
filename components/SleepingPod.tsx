@@ -1,4 +1,4 @@
-import { useAccount, useContractWrite, usePrepareContractWrite } from "wagmi";
+import { Address, useAccount, useContractWrite, usePrepareContractWrite } from "wagmi";
 import { ethers } from "ethers";
 
 interface Pod {
@@ -14,10 +14,25 @@ interface Props {
   pod: Pod;
 }
 
+const GAME_ADDRESS = "0xa74BcF8Ea3A1F83EEf0256070fDe58eDe10189F1";
+
 export function SleepingPod({ pod }: Props) {
   const { address } = useAccount();
+
+  const gameContract = {
+    address: GAME_ADDRESS as Address,
+    abi: gameABI,
+  };
+
+  const { config: startConfig } = usePrepareContractWrite({
+    address: GAME_ADDRESS,
+    abi: gameABI,
+    functionName: "startRound",
+  });
+  const { write: startWrite, isLoading: isLoadingWrite } = useContractWrite(startConfig);
+
   const { config, error } = usePrepareContractWrite({
-    address: "0xa74BcF8Ea3A1F83EEf0256070fDe58eDe10189F1",
+    address: GAME_ADDRESS,
     abi: gameABI,
     functionName: "joinGame",
     overrides: {
@@ -25,7 +40,7 @@ export function SleepingPod({ pod }: Props) {
       value: ethers.utils.parseEther("0.01"),
     },
   });
-  const { write } = useContractWrite(config);
+  const { write, isLoading } = useContractWrite(config);
 
   return (
     <div className="bg-slate-700 rounded-lg p-2 w-fit" key={pod.name}>
@@ -57,8 +72,17 @@ export function SleepingPod({ pod }: Props) {
         onClick={() => write?.()}
         className="shadow shadow-blue-700 disabled:opacity-70 h-8 bg-blue-500 px-4 rounded-lg w-full mt-2 disabled:hover:cursor-not-allowed enabled:hover:bg-blue-500/70 transition-colors ease-in-out"
       >
-        Stake
+        {isLoading ? "Pending" : "Stake"}
       </button>
+      {address === "0xa7E455659B20c9E679fe6eF90EcA39eC9Da25C91" && (
+        <button
+          disabled={!startWrite}
+          onClick={() => startWrite?.()}
+          className="shadow shadow-blue-700 disabled:opacity-70 h-8 bg-blue-500 px-4 rounded-lg w-full mt-2 disabled:hover:cursor-not-allowed enabled:hover:bg-blue-500/70 transition-colors ease-in-out"
+        >
+          {isLoading ? "Pending" : "Start round"}
+        </button>
+      )}
     </div>
   );
 }
