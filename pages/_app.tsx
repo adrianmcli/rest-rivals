@@ -2,14 +2,15 @@ import "@/styles/globals.css";
 import "@rainbow-me/rainbowkit/styles.css";
 
 import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import { SessionProvider } from "next-auth/react";
+import { Inter } from "next/font/google";
+import { QueryClient, QueryClientProvider } from "react-query";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
 import { arbitrum, mainnet, optimism, polygon } from "wagmi/chains";
-import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
-import { SessionProvider } from "next-auth/react";
 
 import type { AppProps } from "next/app";
-import { Inter } from "next/font/google";
+const queryClient = new QueryClient();
 
 const inter = Inter({
   subsets: ["latin"],
@@ -34,11 +35,13 @@ const wagmiClient = createClient({
 export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
     <SessionProvider session={session}>
-      <WagmiConfig client={wagmiClient}>
-        <RainbowKitProvider chains={chains}>
-          <Component {...pageProps} />
-        </RainbowKitProvider>
-      </WagmiConfig>
+      <QueryClientProvider client={queryClient}>
+        <WagmiConfig client={wagmiClient}>
+          <RainbowKitProvider chains={chains}>
+            <Component {...pageProps} />
+          </RainbowKitProvider>
+        </WagmiConfig>
+      </QueryClientProvider>
     </SessionProvider>
   );
 }
