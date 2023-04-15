@@ -21,6 +21,7 @@ export const authOptions: AuthOptions = {
     },
   ],
   callbacks: {
+    // Assign access token to the session object
     async session({ session, token }) {
       session.accessToken = token.accessToken;
       session.user.id = token.id;
