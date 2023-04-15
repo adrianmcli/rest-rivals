@@ -1,6 +1,7 @@
 require("dotenv").config();
 import NextAuth, { AuthOptions } from "next-auth";
 export const authOptions: AuthOptions = {
+  secret: process.env.AUTH_CONFIG_SECRET || "",
   providers: [
     {
       id: "oura-ring",
